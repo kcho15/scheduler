@@ -7,7 +7,7 @@ import 'components/Appointment/styles.scss'
 const Appointment = (props) => {
   return(
     <article className="appointment">
-      <Header />
+      <Header time={props.time} />
       {props.interview ? 
         <Show 
           student={props.interview.student}

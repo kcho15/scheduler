@@ -1,8 +1,6 @@
-import React, { Fragment, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import DayList from "./DayList";
-import InterviewerList from "./InterviewerList";
-import InterviewerListItem from "./InterviewerListItem";
 import Appointment from "./Appointment";
 import "components/Application.scss";
 
@@ -50,12 +48,10 @@ const appointments = {
 export default function Application(props) {
   
   const setDay = day => setState({ ...state, day });
-  const setDays = days => setState({ ...state, days});
+  const setDays = days => setState(prev => ({ ...prev, days }));
   const [state, setState] = useState({
     day: "Monday",
     days: [],
-    // you may put the line below, but will have to remove/comment hardcoded appointments variable
-    appointments: {}
   }); 
   
   useEffect(() => {
@@ -77,9 +73,9 @@ export default function Application(props) {
         <hr className="sidebar__separator sidebar--centered" />
         <nav className="sidebar__menu">
           <DayList
-            day={state.day}
+            value={state.day}
             days={state.days}
-            setDays={setDays}
+            onChange={setDay}
           />
         </nav>
         <img
