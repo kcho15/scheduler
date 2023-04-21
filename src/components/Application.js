@@ -1,28 +1,10 @@
-import React, { useState } from "react";
+import React, { Fragment, useState, useEffect } from "react";
+import axios from "axios";
 import DayList from "./DayList";
 import InterviewerList from "./InterviewerList";
 import InterviewerListItem from "./InterviewerListItem";
 import Appointment from "./Appointment";
 import "components/Application.scss";
-
-// Hard coded days
-const days = [
-  {
-    id: 1,
-    name: "Monday",
-    spots: 2,
-  },
-  {
-    id: 2,
-    name: "Tuesday",
-    spots: 5,
-  },
-  {
-    id: 3,
-    name: "Wednesday",
-    spots: 0,
-  },
-];
 
 // Mock Data
 const appointments = {
@@ -66,8 +48,16 @@ const appointments = {
 
 export default function Application(props) {
   
-  const [day, setDay] = useState("Monday"); 
+  const [days, setDays] = useState([]); 
   
+  useEffect(() => {
+    const url = `/api/days`;
+    axios.get(url).then(response => {
+      console.log(response)
+      setDays([...response.data])
+    });
+  }, []);
+
   return (
     <main className="layout">
       <section className="sidebar">
@@ -80,8 +70,8 @@ export default function Application(props) {
         <nav className="sidebar__menu">
           <DayList
             days={days}
-            value={day}
-            onChange={setDay}
+            value={days}
+            onChange={setDays}
           />
         </nav>
         <img
