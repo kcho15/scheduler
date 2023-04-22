@@ -3,7 +3,7 @@ import axios from "axios";
 import DayList from "./DayList";
 import Appointment from "./Appointment";
 import "components/Application.scss";
-import { getAppointmentsForDay } from "helpers/selectors";
+import { getAppointmentsForDay, getInterview } from "helpers/selectors";
 
 export default function Application(props) {
   
@@ -11,11 +11,10 @@ export default function Application(props) {
   const [state, setState] = useState({
     day: "Monday",
     days: [],
-    appointments: {}
+    appointments: {},
+    interviewers: {}
   }); 
-  
-  const dailyAppointments = getAppointmentsForDay(state, state.day); 
-
+    
   useEffect(() => {
     const daysURL = `/api/days`;
     const appointmentsURL = `/api/appointments`;
@@ -24,11 +23,8 @@ export default function Application(props) {
     Promise.all([
       axios.get(daysURL),
       axios.get(appointmentsURL),
-      axios.get(interviewersURL)
+      axios.get(interviewersURL),
     ]).then((all) => {
-      console.log(all[0]); // first
-      console.log(all[1]); // second
-      console.log(all[2]); // third
       setState(prev => ({
         ...prev, 
         days: all[0].data, 
@@ -37,7 +33,18 @@ export default function Application(props) {
       }));
     });
   }, []);
+  
+  const dailyAppointments = getAppointmentsForDay(state, state.day); 
 
+  const schedule = dailyAppointments.map((appointment) => {
+    const interview = getInterview(state, appointment.interview);
+    return <Appointment
+      key={appointment.id}
+      {...appointment}
+      interview={interview}
+    />;
+  });
+        
   return (
     <main className="layout">
       <section className="sidebar">
@@ -61,13 +68,9 @@ export default function Application(props) {
         />
       </section>
       <section className="schedule">
-        {dailyAppointments.map((appointment) => (
-          <Appointment  
-            key={appointment.id}
-            {...appointment}
-          />
-        ))}
+        {schedule}
+        <Appointment key="last" time="5pm" />
       </section>
     </main>
   );
-}
+} 
