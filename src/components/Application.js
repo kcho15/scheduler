@@ -3,7 +3,7 @@ import axios from "axios";
 import DayList from "./DayList";
 import Appointment from "./Appointment";
 import "components/Application.scss";
-import { getAppointmentsForDay, getInterview } from "helpers/selectors";
+import { getAppointmentsForDay, getInterview, getInterviewersForDay } from "helpers/selectors";
 import useVisualMode from "hooks/useVisualMode";
 import Form from "./Appointment/Form";
 
@@ -13,15 +13,16 @@ import Confirm from "./Appointment/Confirm";
 import Error from "./Appointment/Error";
 import Status from "./Appointment/Status"; 
 
-const EMPTY = "EMPTY";
-const SHOW = "SHOW";
-const CREATE = "CREATE"; 
-const CONFIRM = "CONFIRM"; 
-const ERROR = "ERROR";
-const STATUS = "STATUS";
 
 export default function Application(props) {
-
+  const EMPTY = "EMPTY";
+  const SHOW = "SHOW";
+  const CREATE = "CREATE"; 
+  const CONFIRM = "CONFIRM"; 
+  const ERROR = "ERROR";
+  const STATUS = "STATUS";
+  
+  
   const setDay = day => setState({ ...state, day });
   const [state, setState] = useState({
     day: "Monday",
@@ -29,7 +30,9 @@ export default function Application(props) {
     appointments: {},
     interviewers: {}
   }); 
-    
+  
+  const { mode, transition, back } = useVisualMode( state.appointments ? SHOW : EMPTY)
+
   useEffect(() => {
     const daysURL = `/api/days`;
     const appointmentsURL = `/api/appointments`;
@@ -49,30 +52,23 @@ export default function Application(props) {
     });
   }, []);
   
-  const { mode, transition, back } = useVisualMode( state.appointments ? SHOW : EMPTY)
-  
-  const dailyAppointments = getAppointmentsForDay(state, state.day).map((appointment) => {
+  const dailyInterviewers = getInterviewersForDay(state, state.day);
+  const dailyAppointments = getAppointmentsForDay(state, state.day);
+  const appointmentsList = dailyAppointments.map((appointment) => {
+    const interview = getInterview(state, appointment.interview);
+    
     return (
       <Appointment
         key={appointment.id}
-        {...appointment}
-        interview={getInterview(state, appointment.interview)}
-        appointmentId={appointment.id}
+        id={appointment.id}
+        time={appointment.time}
+        interview={interview}
+        interviewers={dailyInterviewers}
+
       />
     );
   });
-  
-  // const schedule = dailyAppointments.map((appointment) => {
-  //   const interview = getInterview(state, appointment.interview);
-  //   return (
-  //    <Appointment
-  //       key={appointment.id}
-  //       {...appointment}
-  //       interview={interview}
-  //   />
-  //   );
-  // });
-        
+          
   return (
     <main className="layout">
       <section className="sidebar">
@@ -82,6 +78,7 @@ export default function Application(props) {
           alt="Interview Scheduler"
         />
         <hr className="sidebar__separator sidebar--centered" />
+
         <nav className="sidebar__menu">
           <DayList
             value={state.day}
@@ -89,6 +86,7 @@ export default function Application(props) {
             onChange={setDay}
           />
         </nav>
+
         <img
           className="sidebar__lhl sidebar--centered"
           src="images/lhl.png"
@@ -96,24 +94,25 @@ export default function Application(props) {
         />
       </section>
       <section className="schedule">
-        {mode === EMPTY && <Empty onAdd={() => transition(CREATE)} />}
-        {mode === SHOW && 
+        {appointmentsList}
+        {/* {mode === EMPTY && <Empty onAdd={() => transition(CREATE)} />}
+        {mode === SHOW && props.interview &&
           (
             <Show
-            student={getInterview(state, props.appointment.interview).student}
-            interviewer={getInterview(state, props.appointment.interview).interviewer}
+            student={props.interview.student}
+            interviewer={props.interview.interviewer}
+
             />
           )
         }
         {mode === CREATE && 
           (
             <Form
-              interviewers={state.interviewers}
-              onCancel={()=> back()}
+              interviewers={props.interviewers}
+              onCancel={back}
             />
           )
-        }
-        {dailyAppointments}  
+        } */}
         <Appointment key="last" time="5pm" />
       </section>
     </main>
