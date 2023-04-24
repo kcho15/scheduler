@@ -4,9 +4,24 @@ import DayList from "./DayList";
 import Appointment from "./Appointment";
 import "components/Application.scss";
 import { getAppointmentsForDay, getInterview } from "helpers/selectors";
+import useVisualMode from "hooks/useVisualMode";
+import Form from "./Appointment/Form";
+
+import Empty from "./Appointment/Empty";
+import Show from "./Appointment/Show";
+import Confirm from "./Appointment/Confirm";
+import Error from "./Appointment/Error";
+import Status from "./Appointment/Status"; 
+
+const EMPTY = "EMPTY";
+const SHOW = "SHOW";
+const CREATE = "CREATE"; 
+const CONFIRM = "CONFIRM"; 
+const ERROR = "ERROR";
+const STATUS = "STATUS";
 
 export default function Application(props) {
-  
+
   const setDay = day => setState({ ...state, day });
   const [state, setState] = useState({
     day: "Monday",
@@ -34,16 +49,29 @@ export default function Application(props) {
     });
   }, []);
   
-  const dailyAppointments = getAppointmentsForDay(state, state.day); 
-
-  const schedule = dailyAppointments.map((appointment) => {
-    const interview = getInterview(state, appointment.interview);
-    return <Appointment
-      key={appointment.id}
-      {...appointment}
-      interview={interview}
-    />;
+  const { mode, transition, back } = useVisualMode( state.appointments ? SHOW : EMPTY)
+  
+  const dailyAppointments = getAppointmentsForDay(state, state.day).map((appointment) => {
+    return (
+      <Appointment
+        key={appointment.id}
+        {...appointment}
+        interview={getInterview(state, appointment.interview)}
+        appointmentId={appointment.id}
+      />
+    );
   });
+  
+  // const schedule = dailyAppointments.map((appointment) => {
+  //   const interview = getInterview(state, appointment.interview);
+  //   return (
+  //    <Appointment
+  //       key={appointment.id}
+  //       {...appointment}
+  //       interview={interview}
+  //   />
+  //   );
+  // });
         
   return (
     <main className="layout">
@@ -68,7 +96,24 @@ export default function Application(props) {
         />
       </section>
       <section className="schedule">
-        {schedule}
+        {mode === EMPTY && <Empty onAdd={() => transition(CREATE)} />}
+        {mode === SHOW && 
+          (
+            <Show
+            student={getInterview(state, props.appointment.interview).student}
+            interviewer={getInterview(state, props.appointment.interview).interviewer}
+            />
+          )
+        }
+        {mode === CREATE && 
+          (
+            <Form
+              interviewers={state.interviewers}
+              onCancel={()=> back()}
+            />
+          )
+        }
+        {dailyAppointments}  
         <Appointment key="last" time="5pm" />
       </section>
     </main>

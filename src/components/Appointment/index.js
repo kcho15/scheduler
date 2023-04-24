@@ -4,6 +4,13 @@ import Show from "./Show";
 import Empty from "./Empty";
 import 'components/Appointment/styles.scss'
 
+const EMPTY = "EMPTY";
+const SHOW = "SHOW";
+const CREATE = "CREATE"; 
+const CONFIRM = "CONFIRM"; 
+const ERROR = "ERROR";
+const STATUS = "STATUS";
+
 const Appointment = (props) => {
   return(
     <article className="appointment">
