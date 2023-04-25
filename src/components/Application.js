@@ -5,14 +5,6 @@ import Appointment from "./Appointment";
 import "components/Application.scss";
 import { getAppointmentsForDay, getInterview, getInterviewersForDay } from "helpers/selectors";
 import useVisualMode from "hooks/useVisualMode";
-import Form from "./Appointment/Form";
-
-import Empty from "./Appointment/Empty";
-import Show from "./Appointment/Show";
-import Confirm from "./Appointment/Confirm";
-import Error from "./Appointment/Error";
-import Status from "./Appointment/Status"; 
-
 
 export default function Application(props) {
   const EMPTY = "EMPTY";
@@ -51,7 +43,37 @@ export default function Application(props) {
       }));
     });
   }, []);
+
+// book interview function 
+  const bookInterview = function(id, interview) {
+    console.log(id, interview); 
+    
+    // replace value of interview key  
+    const appointment = {
+      ...state.appointments[id],
+      interview: { ...interview }
+    };
+
+    // replace existing appointment with matching id 
+    const appointments = {
+      ...state.appointments,
+      [id]: appointment
+    };
+
+    // update the database with the interview data, setting a new state object 
+    return axios.put(`/api/appointments/${id}`, appointment)
+      .then((res) => {
+        setState({
+          ...state,
+          appointments
+        })
+      });
+  }
+
+// cancel interview function
+  const cancelInterview = function() {}
   
+
   const dailyInterviewers = getInterviewersForDay(state, state.day);
   const dailyAppointments = getAppointmentsForDay(state, state.day);
   const appointmentsList = dailyAppointments.map((appointment) => {
@@ -64,6 +86,7 @@ export default function Application(props) {
         time={appointment.time}
         interview={interview}
         interviewers={dailyInterviewers}
+        bookInterview={bookInterview}
 
       />
     );
@@ -95,24 +118,6 @@ export default function Application(props) {
       </section>
       <section className="schedule">
         {appointmentsList}
-        {/* {mode === EMPTY && <Empty onAdd={() => transition(CREATE)} />}
-        {mode === SHOW && props.interview &&
-          (
-            <Show
-            student={props.interview.student}
-            interviewer={props.interview.interviewer}
-
-            />
-          )
-        }
-        {mode === CREATE && 
-          (
-            <Form
-              interviewers={props.interviewers}
-              onCancel={back}
-            />
-          )
-        } */}
         <Appointment key="last" time="5pm" />
       </section>
     </main>
