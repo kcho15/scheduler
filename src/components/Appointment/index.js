@@ -56,7 +56,7 @@ const Appointment = (props) => {
 
 
   return(
-    <article className="appointment">
+    <article className="appointment" data-testid="appointment">
       <Header time={props.time} />
       {mode === EMPTY && <Empty onAdd={() => transition(CREATE)} />}
       {mode === SHOW && props.interview && (
@@ -75,8 +75,8 @@ const Appointment = (props) => {
           onSave={save}
         />
       )}
-      {mode === SAVING && <Status message="Saving..." />}
-      {mode === DELETING && <Status message="Deleting..." />}
+      {mode === SAVING && <Status message="Saving" />}
+      {mode === DELETING && <Status message="Deleting" />}
       {mode === CONFIRM && (
         <Confirm
           onCancel={back}
@@ -105,6 +105,7 @@ const Appointment = (props) => {
           onClose={back}
         />
       )}
+       
     </article>
   );
 };

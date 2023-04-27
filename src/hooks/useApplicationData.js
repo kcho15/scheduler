@@ -34,7 +34,6 @@ const useApplicationData = () => {
 
     // book interview function 
     const bookInterview = function(id, interview) {
-      console.log(id, interview); 
       
       // replace value of interview key  
       const appointment = {
@@ -51,11 +50,13 @@ const useApplicationData = () => {
       // update the database with the interview data, setting a new state object 
       return axios.put(`/api/appointments/${id}`, appointment)
       .then((res) => {
+        const days = updateSpots("bookAppointment")
         setState({
             ...state,
             appointments,
+            days
           })
-        });
+        })
     }
   
   // cancel interview function
@@ -76,14 +77,37 @@ const useApplicationData = () => {
       // update the database with the interview data, setting a new state object 
       return axios.delete(`/api/appointments/${id}`)
       .then((res) => {
+        const days = updateSpots()
         setState({
           ...state,
           appointments,
+          days
         })
-      });
-  
+      })
+
     }
 
+  // // spots remaining
+  const updateSpots = function(reqType) {
+    
+    const days = [];
+    
+    for (const day of state.days) {
+
+      if (day.name === state.day) {
+        if (reqType === "bookAppointment") {
+          days.push({ ...day, spots: day.spots - 1  }) 
+        } else {
+          days.push({ ...day, spots: day.spots + 1  }) 
+        }
+      } else {
+        days.push(day);  
+      }
+    }
+    return days 
+  };
+
+  
   return {
     state,
     setDay,
