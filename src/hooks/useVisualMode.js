@@ -18,7 +18,7 @@ export default function useVisualMode(initial) {
       } else {
         // If this is not a replacement, add the new mode to the end of the history array
         return [...prev, newMode]; 
-      }
+      };
     });
   }; 
 
@@ -29,9 +29,9 @@ export default function useVisualMode(initial) {
       
       // Update the history array to remove the last item
       setHistory(prev => prev.slice(0, -1)); 
-    }   
+    };   
   }; 
   
   // Return an object containing the current mode, the transition function, and the back function
   return { mode, transition, back }; 
-}
+};
