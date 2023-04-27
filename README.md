@@ -5,13 +5,13 @@ A Single Page React Application where students can book, edit, or cancel appoint
 ## Demos
 
 ### Add new appointment 
-![]
+![]https://github.com/kcho15/scheduler/blob/master/public/images/Interview-Scheduler-Demo-Add.gif?raw=true
 
 ### Edit and Delete appointments
-![]
+![]https://github.com/kcho15/scheduler/blob/master/public/images/Interview-Scheduler-Demo-Edit-Delete.gif?raw=true
 
 ### Error handling 
-![]
+![]https://github.com/kcho15/scheduler/blob/master/public/images/Interview-Scheduler-Demo-Errors.gif?raw=true
 
 ## Setup
 
