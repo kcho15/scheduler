@@ -1,5 +1,5 @@
 import React from 'react';
-import 'components/Appointment/styles.scss'
+import 'components/Appointment/styles.scss';
 
 import Header from './Header';
 import Show from './Show';
@@ -45,7 +45,9 @@ const Appointment = (props) => {
 
   // destroy appointment
   function destroy() {
+    
     transition(DELETING, true)
+    
     props
       .cancelInterview(props.id)
       .then(()=> {
@@ -105,7 +107,6 @@ const Appointment = (props) => {
           onClose={back}
         />
       )}
-       
     </article>
   );
 };

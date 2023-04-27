@@ -1,7 +1,6 @@
 import React from "react";
 import classNames from "classnames";
 import "components/Button.scss";
-// import { action } from "@storybook/addon-actions";
 
 export default function Button(props) {
   let buttonClass = classNames("button", { 
@@ -18,4 +17,4 @@ export default function Button(props) {
       {props.children}
     </button>
   );
-}
+};

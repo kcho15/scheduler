@@ -9,7 +9,7 @@ export function getAppointmentsForDay (state, day){
   // If the day object is not found, return an empty array
   if(!targetDay) {
     return []; 
-  }
+  };
 
   // Map over the appointments array for the target day and return an array of appointment objects
   const appointmentData = targetDay.appointments.map((id) => state.appointments[id]); 
@@ -30,18 +30,17 @@ export function getInterview (state, interview) {
   interviewObj.student = interview.student;
   interviewObj.interviewer = interviewer;  
 
-  return interviewObj
-}
+  return interviewObj;
+};
 
 export function getInterviewersForDay(state, day) {
   const interviewersForDay = state.days.filter(singleDay => singleDay.name === day)[0];
 
   if (!interviewersForDay) {
     return [];
-  }
+  };
 
-  const interviewersData = interviewersForDay.interviewers.map(interviewerId => state.interviewers[interviewerId])
-
+  const interviewersData = interviewersForDay.interviewers.map(interviewerId => state.interviewers[interviewerId]);
 
   return interviewersData;
-}
+};

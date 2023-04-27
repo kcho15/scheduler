@@ -13,7 +13,7 @@ const InterviewerList = (props) => {
         selected={interviewer.id === props.value }
         setInterviewer={() => props.onChange(interviewer.id)} 
       />
-    )
+    );
   });
 
   return (      
@@ -23,7 +23,7 @@ const InterviewerList = (props) => {
           {interviewers}
         </ul>
     </section>
-  )
+  );
 };
 
 

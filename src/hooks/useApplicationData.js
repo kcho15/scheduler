@@ -52,12 +52,12 @@ const useApplicationData = () => {
       .then((res) => {
         const days = updateSpots("bookAppointment")
         setState({
-            ...state,
-            appointments,
-            days
-          })
-        })
-    }
+          ...state,
+          appointments,
+          days
+        });
+      });
+    };
   
   // cancel interview function
     const cancelInterview = function(id) {
@@ -65,7 +65,7 @@ const useApplicationData = () => {
   
       const appointment = {
         ...state.appointments[id],
-        interview: null,
+        interview: null
       };
   
       // replace existing appointment with matching id 
@@ -82,10 +82,9 @@ const useApplicationData = () => {
           ...state,
           appointments,
           days
-        })
-      })
-
-    }
+        });
+      });
+    };
 
   // // spots remaining
   const updateSpots = function(reqType) {
@@ -96,15 +95,15 @@ const useApplicationData = () => {
 
       if (day.name === state.day) {
         if (reqType === "bookAppointment") {
-          days.push({ ...day, spots: day.spots - 1  }) 
+          days.push({ ...day, spots: day.spots - 1  }); 
         } else {
-          days.push({ ...day, spots: day.spots + 1  }) 
-        }
+          days.push({ ...day, spots: day.spots + 1  }); 
+        };
       } else {
         days.push(day);  
-      }
-    }
-    return days 
+      };
+    };
+    return days;
   };
 
   
@@ -115,6 +114,6 @@ const useApplicationData = () => {
     cancelInterview
   };
 
-}
+};
 
 export default useApplicationData; 
