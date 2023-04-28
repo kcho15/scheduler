@@ -50,7 +50,7 @@ const useApplicationData = () => {
       // update the database with the interview data, setting a new state object 
       return axios.put(`/api/appointments/${id}`, appointment)
       .then((res) => {
-        const days = updateSpots("bookAppointment")
+        const days = updateSpots(state.day, state.days, appointments)
         setState({
           ...state,
           appointments,
@@ -77,7 +77,7 @@ const useApplicationData = () => {
       // update the database with the interview data, setting a new state object 
       return axios.delete(`/api/appointments/${id}`)
       .then((res) => {
-        const days = updateSpots()
+        const days = updateSpots(state.day, state.days, appointments)
         setState({
           ...state,
           appointments,
@@ -86,26 +86,31 @@ const useApplicationData = () => {
       });
     };
 
-  // // spots remaining
-  const updateSpots = function(reqType) {
-    
-    const days = [];
-    
-    for (const day of state.days) {
 
-      if (day.name === state.day) {
-        if (reqType === "bookAppointment") {
-          days.push({ ...day, spots: day.spots - 1  }); 
-        } else {
-          days.push({ ...day, spots: day.spots + 1  }); 
-        };
-      } else {
-        days.push(day);  
-      };
-    };
-    return days;
-  };
+  // helper to check for available spots
+  const availableSpots = (day, appointments) => {
+    let count = 0;
+    for (const id of day.appointments) {
+      const appointment = appointments[id];
+      if (!appointment.interview) {
+        count++;
+      }
+    }
+    return count;
+  };  
 
+  // spots remaining
+  const updateSpots = function(dayName, days, appointments) {
+    
+    const daysArray = days.map((day) => {
+      if (day.name === dayName) {
+        const spots = availableSpots(day, appointments);
+        return { ...day, spots: spots};  
+      }
+      return day; 
+    });
+    return daysArray; 
+  }
   
   return {
     state,
